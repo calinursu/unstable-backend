@@ -1,16 +1,20 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
+import { Fragment } from "react";
 import styles from "../styles/Home.module.css";
 
 type Content = {
   isDown: boolean;
 };
+
 type Props = {
   content: Content;
   lastRegenerationTime: string;
 };
 
 export default function Home({ content, lastRegenerationTime }: Props) {
+  const links = ["product/1", "product/2"];
   return (
     <div className={styles.container}>
       <Head>
@@ -21,6 +25,14 @@ export default function Home({ content, lastRegenerationTime }: Props) {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Unstable backend</h1>
+        <div>
+          <Link href="/">Home </Link>
+          {links.map((n) => (
+            <Fragment key={n}>
+              | <Link href={`/${n}`}>/{n} </Link>
+            </Fragment>
+          ))}
+        </div>
 
         <p className={styles.description}>
           Backend is{" "}
@@ -58,7 +70,12 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
       content: data,
-      lastRegenerationTime: `${now.getHours()}.${now.getMinutes()},${now.getSeconds()}`,
+      lastRegenerationTime: `${String(now.getHours()).padStart(
+        2,
+        "0"
+      )}.${String(now.getMinutes()).padStart(2, "0")},${String(
+        now.getSeconds()
+      ).padStart(2, "0")}`,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
