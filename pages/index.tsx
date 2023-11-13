@@ -1,7 +1,16 @@
+import { GetStaticProps } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+type Content = {
+  isDown: boolean;
+};
+type Props = {
+  content: Content;
+  lastRegenerationTime: string;
+};
+
+export default function Home({ content, lastRegenerationTime }: Props) {
   return (
     <div className={styles.container}>
       <Head>
@@ -14,10 +23,46 @@ export default function Home() {
         <h1 className={styles.title}>Unstable backend</h1>
 
         <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.tsx</code>
+          Backend is{" "}
+          <code
+            className={
+              styles.code + " " + (content.isDown ? styles.down : styles.up)
+            }
+          >
+            {content.isDown ? "Down" : "Operational"}
+          </code>
+        </p>
+        <p className={styles.description}>
+          Last regeneration time: <code>{lastRegenerationTime}</code>
         </p>
       </main>
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  let now = new Date();
+
+  const response = await fetch(
+    "https://calinursu.github.io/data/feature-toggles.json"
+  );
+  const data = await response.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+      revalidate: true,
+    };
+  }
+
+  return {
+    props: {
+      content: data,
+      lastRegenerationTime: `${now.getHours()}.${now.getMinutes()},${now.getSeconds()}`,
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 10 seconds
+    revalidate: 10, // In seconds
+  };
+};
