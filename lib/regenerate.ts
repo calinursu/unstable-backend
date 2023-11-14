@@ -1,3 +1,8 @@
+type Data = {
+  isDown: boolean;
+  errorProductCodes: string[];
+};
+
 export default async function regenerate() {
   const timeString = new Date().toLocaleString("da-DK", {
     timeZone: "CET",
@@ -6,7 +11,7 @@ export default async function regenerate() {
   const response = await fetch(
     "https://calinursu.github.io/data/feature-toggles.json"
   );
-  const feature = await response.json();
+  const data: Data = await response.json();
 
-  return { feature, lastRegenerationTime: timeString.split(" ")[1] };
+  return { data, lastRegenerationTime: timeString.split(" ")[1] };
 }

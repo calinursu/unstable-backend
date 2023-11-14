@@ -62,10 +62,10 @@ export default function Home({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { feature, lastRegenerationTime } = await regenerate();
-  const data = await translations();
+  const { data, lastRegenerationTime } = await regenerate();
+  const translationsData = await translations();
 
-  if (!feature) {
+  if (!data) {
     return {
       notFound: true,
       revalidate: true,
@@ -74,9 +74,9 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      content: feature,
+      content: data,
       lastRegenerationTime,
-      translations: data,
+      translations: translationsData,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
