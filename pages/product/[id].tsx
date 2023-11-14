@@ -51,7 +51,7 @@ export default function Product({
           <Link href="/">Home </Link>|{" "}
           <Link href="/product/1">/product/1 </Link>|{" "}
           <Link href="/product/2">/product/2 </Link>|{" "}
-          <Link href="/product/3">/product/3 </Link>|{" "}
+          <Link href="/product/3">/product/3 </Link>
           {links.map((n) => (
             <Fragment key={n}>
               | <Link href={`/product/${n}`}>{`/product/${n} `}</Link>
@@ -73,6 +73,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: true,
     };
   }
+
+  console.log(params.id, data);
 
   if (
     data.errorProductCodes &&
