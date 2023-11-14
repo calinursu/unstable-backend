@@ -34,14 +34,6 @@ export default function Home({
         <h1 className={styles.title}>Unstable backend</h1>
         <h2>{translations.globalHeadlineAlias || "globalHeadlineAlias"}</h2>
         <h4 style={{ fontWeight: 300 }}>Should regenerate every 5 seconds</h4>
-        <div>
-          <Link href="/">Home </Link>
-          {links.map((n) => (
-            <Fragment key={n}>
-              | <Link href={`/${n}`}>{`/${n} `}</Link>
-            </Fragment>
-          ))}
-        </div>
 
         <p className={styles.description}>
           Backend is{" "}
@@ -56,6 +48,14 @@ export default function Home({
         <p className={styles.description}>
           Last regeneration time: <code>{lastRegenerationTime}</code>
         </p>
+        <div>
+          <Link href="/">Home </Link>
+          {links.map((n) => (
+            <Fragment key={n}>
+              | <Link href={`/${n}`}>{`/${n} `}</Link>
+            </Fragment>
+          ))}
+        </div>
       </main>
     </div>
   );
