@@ -47,15 +47,15 @@ export default function Product({
           Last regeneration time: <code>{lastRegenerationTime}</code>
         </p>
         <div>
-          <Link href="/">Home </Link>
+          <Link href="/">Home </Link>|{" "}
+          <Link href="/product/1">/product/1 </Link>|{" "}
+          <Link href="/product/2">/product/2 </Link>|{" "}
+          <Link href="/product/3">/product/3 </Link>|{" "}
           {links.map((n) => (
             <Fragment key={n}>
               | <Link href={`/product/${n}`}>{`/product/${n} `}</Link>
             </Fragment>
           ))}
-          | <Link href="/product/1">/product/1 </Link>|{" "}
-          <Link href="/product/2">/product/2 </Link>|{" "}
-          <Link href="/product/3">/product/3 </Link>
         </div>
       </main>
     </div>
