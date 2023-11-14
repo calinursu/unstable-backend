@@ -43,7 +43,7 @@ export default function Product({
           {translations.globalOnlinePriceInformationLabel ||
             "globalOnlinePriceInformationLabel"}
         </p>
-        <p>
+        <p className={styles.description}>
           Last regeneration time: <code>{lastRegenerationTime}</code>
         </p>
         <div>
