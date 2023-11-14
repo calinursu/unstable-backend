@@ -2,19 +2,26 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Fragment } from "react";
+import regenerate from "../lib/regenerate";
+import translations, { TranslationsType } from "../lib/translations";
 import styles from "../styles/Home.module.css";
 
 type Content = {
   isDown: boolean;
 };
 
-type Props = {
+export type Props = {
   content: Content;
   lastRegenerationTime: string;
+  translations: TranslationsType;
 };
 
-export default function Home({ content, lastRegenerationTime }: Props) {
-  const links = ["product/1", "product/2"];
+export default function Home({
+  content,
+  lastRegenerationTime,
+  translations,
+}: Props) {
+  const links = ["product/1", "product/2", "product/3"];
   return (
     <div className={styles.container}>
       <Head>
@@ -25,11 +32,13 @@ export default function Home({ content, lastRegenerationTime }: Props) {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Unstable backend</h1>
+        <h2>{translations.globalHeadlineAlias || "globalHeadlineAlias"}</h2>
+        <h4 style={{ fontWeight: 300 }}>Should regenerate every 5 seconds</h4>
         <div>
           <Link href="/">Home </Link>
           {links.map((n) => (
             <Fragment key={n}>
-              | <Link href={`/${n}`}>/{n} </Link>
+              | <Link href={`/${n}`}>{`/${n} `}</Link>
             </Fragment>
           ))}
         </div>
@@ -52,15 +61,11 @@ export default function Home({ content, lastRegenerationTime }: Props) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  let now = new Date();
+export const getStaticProps: GetStaticProps = async () => {
+  const { feature, lastRegenerationTime } = await regenerate();
+  const data = await translations();
 
-  const response = await fetch(
-    "https://calinursu.github.io/data/feature-toggles.json"
-  );
-  const data = await response.json();
-
-  if (!data) {
+  if (!feature) {
     return {
       notFound: true,
       revalidate: true,
@@ -69,17 +74,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
   return {
     props: {
-      content: data,
-      lastRegenerationTime: `${String(now.getHours()).padStart(
-        2,
-        "0"
-      )}.${String(now.getMinutes()).padStart(2, "0")},${String(
-        now.getSeconds()
-      ).padStart(2, "0")}`,
+      content: feature,
+      lastRegenerationTime,
+      translations: data,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 10 seconds
-    revalidate: 10, // In seconds
+    revalidate: 5, // In seconds
   };
 };
